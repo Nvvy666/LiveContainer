@@ -23,26 +23,11 @@ struct LCTabView: View {
     
     var body: some View {
         TabView(selection: $sharedModel.selectedTab) {
-            if DataManager.shared.model.multiLCStatus != 2 {
-                LCSourcesView()
-                    .tabItem {
-                        Label("lc.tabView.sources".loc, systemImage: "books.vertical")
-                    }
-                    .tag(LCTabIdentifier.sources)
-            }
             LCAppListView()
                 .tabItem {
                     Label("lc.tabView.apps".loc, systemImage: "square.stack.3d.up.fill")
                 }
                 .tag(LCTabIdentifier.apps)
-            if DataManager.shared.model.multiLCStatus != 2 {
-                LCTweaksView()
-                    .tabItem{
-                        Label("lc.tabView.tweaks".loc, systemImage: "wrench.and.screwdriver")
-                    }
-                    .tag(LCTabIdentifier.tweaks)
-            }
-            
             LCSettingsView()
                 .tabItem {
                     Label("lc.tabView.settings".loc, systemImage: "gearshape.fill")
@@ -135,7 +120,7 @@ struct LCTabView: View {
             case "certificate":
                 sharedModel.selectedTab = .settings
             case "source":
-                sharedModel.selectedTab = .sources
+                sharedModel.selectedTab = .apps
             default:
                 return
             }
