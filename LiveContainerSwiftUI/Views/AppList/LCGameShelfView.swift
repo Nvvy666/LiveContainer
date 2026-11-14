@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// Console-style game shelf: one large hero panel for the focused game and a
-/// horizontal strip of the rest underneath.
+/// Console-style shelf: a large focused panel plus a strip of thumbnails.
+/// Long-press a tile for 卸载.
 struct LCGameShelfView: View {
     let apps: [LCAppModel]
+    var onDelete: ((LCAppModel) -> Void)? = nil
 
     @State private var selectedIndex: Int = 0
     @State private var launching: String? = nil
@@ -21,8 +22,6 @@ struct LCGameShelfView: View {
         .padding(.bottom, 12)
     }
 
-    // MARK: - hero
-
     private var hero: some View {
         ZStack(alignment: .bottomLeading) {
             Color.black
@@ -33,17 +32,17 @@ struct LCGameShelfView: View {
                     .scaledToFill()
                     .frame(maxWidth: .infinity)
                     .frame(height: 470)
-                    .blur(radius: 70)
-                    .opacity(0.55)
+                    .blur(radius: 55)
+                    .opacity(0.45)
                     .clipped()
             }
 
             LinearGradient(
-                colors: [Color.black.opacity(0.15), Color.black.opacity(0.92)],
+                colors: [Color.black.opacity(0.10), Color.black.opacity(0.94)],
                 startPoint: .top, endPoint: .bottom)
 
             HStack(alignment: .bottom, spacing: 34) {
-                cover(selected, size: 210, radius: 46)
+                cover(selected, size: 230, radius: 50)
 
                 VStack(alignment: .leading, spacing: 14) {
                     Text(selected?.displayName ?? "")
@@ -86,8 +85,6 @@ struct LCGameShelfView: View {
         .shadow(color: .white.opacity(0.05), radius: 30, y: 14)
     }
 
-    // MARK: - strip
-
     private var strip: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 24) {
@@ -103,22 +100,21 @@ struct LCGameShelfView: View {
                             )
                             .opacity(idx == selectedIndex ? 1 : 0.55)
                             .scaleEffect(idx == selectedIndex ? 1.0 : 0.92)
-                            .overlay(alignment: .bottomTrailing) {
-                                if launching == app.bundleIdentifier {
-                                    ProgressView().tint(.white).padding(6)
-                                }
-                            }
                     }
                     .buttonStyle(.plain)
-                    .id(idx)
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            onDelete?(app)
+                        } label: {
+                            Label("卸载", systemImage: "trash")
+                        }
+                    }
                 }
             }
             .padding(.horizontal, 40)
             .padding(.vertical, 4)
         }
     }
-
-    // MARK: - pieces
 
     @ViewBuilder
     private func cover(_ app: LCAppModel?, size: CGFloat, radius: CGFloat) -> some View {
