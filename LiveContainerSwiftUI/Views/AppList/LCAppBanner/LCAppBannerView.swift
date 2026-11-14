@@ -58,6 +58,7 @@ final class LCAppBannerRootView: UIView {
         iconImageView.isAccessibilityElement = false
 
         configureLabel(nameLabel, font: .systemFont(ofSize: 16, weight: .bold))
+        nameLabel.numberOfLines = 2
         configureLabel(versionLabel, font: .systemFont(ofSize: 12))
         configureLabel(remarkLabel, font: .systemFont(ofSize: 10))
         configureLabel(containerLabel, font: .systemFont(ofSize: 8))
