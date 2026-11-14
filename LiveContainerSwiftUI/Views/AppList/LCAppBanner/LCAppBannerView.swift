@@ -86,6 +86,7 @@ final class LCAppBannerRootView: UIView {
         detailStack.addArrangedSubview(versionLabel)
         detailStack.addArrangedSubview(remarkLabel)
         detailStack.addArrangedSubview(containerLabel)
+        containerLabel.isHidden = true
         detailStack.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         detailStack.isAccessibilityElement = true
 
@@ -139,13 +140,14 @@ final class LCAppBannerRootView: UIView {
         iconImageView.image = icon
         nameLabel.text = model.displayName
         nameLabel.textColor = .label
-        versionLabel.text = "\(model.version) - \(model.bundleIdentifier)"
+        versionLabel.text = model.version
         versionLabel.textColor = textColor
         remarkLabel.text = model.uiRemark
         remarkLabel.textColor = textColor.withAlphaComponent(0.8)
         remarkLabel.isHidden = model.uiRemark.isEmpty
         containerLabel.text = model.uiSelectedContainer?.name ?? "lc.appBanner.noDataFolder".loc
         containerLabel.textColor = textColor
+        containerLabel.isHidden = true
 
         sharedBadge.isHidden = !model.uiIsShared
         sharedBadge.backgroundColor = UIColor(named: "BadgeColor") ?? .systemOrange
