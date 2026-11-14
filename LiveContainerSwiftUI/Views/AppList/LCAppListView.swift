@@ -131,7 +131,7 @@ struct LCAppListView : View, LCAppBannerDelegate, LCAppModelDelegate {
                 })
                 .hidden()
                 
-                LCGameShelfView(apps: filteredApps)
+                LCGameShelfView(apps: filteredApps, onDelete: { app in removeApp(app: app) })
                     .animation(searchContext.isTyping ? nil : .easeInOut, value: filteredApps)
 
                 VStack {
