@@ -1,0 +1,44 @@
+name: Build LiveContainer IPA
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: reason for this build
+        required: false
+jobs:
+  build:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '27.2'
+      - name: Show Xcode
+        run: xcodebuild -version
+      - name: Archive
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project LiveContainer.xcodeproj \
+            -scheme LiveContainer \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/LiveContainer.xcarchive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY="" \
+            2>&1 | tail -n 300
+      - name: Package IPA
+        run: |
+          mkdir -p out/Payload
+          cp -R build/LiveContainer.xcarchive/Products/Applications/LiveContainer.app out/Payload/
+          cd out
+          zip -qry LiveContainer.ipa Payload
+          ls -lh LiveContainer.ipa
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LiveContainer-ipa
+          path: out/LiveContainer.ipa
+          if-no-files-found: error
