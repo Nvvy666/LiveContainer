@@ -131,14 +131,8 @@ struct LCAppListView : View, LCAppBannerDelegate, LCAppModelDelegate {
                 })
                 .hidden()
                 
-                LazyVStack {
-                    ForEach(filteredApps, id: \.self) { app in
-                        LCAppBanner(appModel: app, delegate: self)
-                    }
-                    .transition(.scale)
-                }
-                .padding()
-                .animation(searchContext.isTyping ? nil : .easeInOut, value: filteredApps)
+                LCGameShelfView(apps: filteredApps)
+                    .animation(searchContext.isTyping ? nil : .easeInOut, value: filteredApps)
 
                 VStack {
                     if LCUtils.appGroupUserDefault.bool(forKey: "LCStrictHiding") {
